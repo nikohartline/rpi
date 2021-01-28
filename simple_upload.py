@@ -28,14 +28,14 @@ if not creds or not creds.valid:
     with open('tokens/token.pickle', 'wb') as token:
         pickle.dump(creds, token)
 
-service = build('drive', 'v3', credentials=creds)
+drive_service = build('drive', 'v3', credentials=creds)
 
 file_metadata = {'name': 'helloworld.py'}
-media = MediaFileUpload('helloworld.py', mimetype='text/plain') #text/csv for data
+media = MediaFileUpload('helloworld.py', mimetype='text/plain', resumable=True)
+#text/csv for data
 # Visit https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
 # for a list of available mimetypes
 file = drive_service.files().create(body=file_metadata,
                                     media_body=media,
-                                    fields='id',
-                                    uploadType=resumable).execute()
+                                    fields='id').execute()
 print('File ID: %s' % file.get('id'))
